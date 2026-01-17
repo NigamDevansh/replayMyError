@@ -1,0 +1,38 @@
+{
+  "name": "error-replay",
+  "version": "1.0.0",
+  "description": "Lightweight error replay package that records user actions and generates detailed error reports",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "error",
+    "replay",
+    "debugging",
+    "tracking",
+    "error-reporting",
+    "user-actions",
+    "react",
+    "typescript"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.3.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/error-replay"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/error-replay/issues"
+  }
+}
