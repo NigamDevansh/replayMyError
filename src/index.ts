@@ -201,6 +201,8 @@ export class ErrorReplay {
             if (this.config.onError) {
                 this.config.onError(report);
             }
+            // Clear buffer after error so next error only has actions since this one
+            this.buffer.clear();
         };
         window.addEventListener('error', this.errorHandler);
 
@@ -210,6 +212,8 @@ export class ErrorReplay {
             if (this.config.onError) {
                 this.config.onError(report);
             }
+            // Clear buffer after error so next error only has actions since this one
+            this.buffer.clear();
         };
         window.addEventListener('unhandledrejection', this.rejectionHandler);
     }
