@@ -72,10 +72,16 @@ export class ErrorReplay {
         }
 
         if (this.config.trackInputs) {
+            // Handle both boolean and object config
+            const trackConfig = typeof this.config.trackInputs === 'object'
+                ? this.config.trackInputs
+                : undefined;
+
             const cleanup = createInputDetector({
                 captureComponents: this.config.captureComponents,
                 sanitizePatterns: this.config.sanitize,
-                onAction: addAction
+                onAction: addAction,
+                trackConfig
             });
             this.cleanupFunctions.push(cleanup);
         }
