@@ -3,6 +3,7 @@
     "version": "1.0.0",
     "description": "Lightweight error replay package that records user actions and generates detailed error reports",
     "main": "dist/index.js",
+    "module": "dist/index.js",
     "types": "dist/index.d.ts",
     "exports": {
         ".": {
@@ -13,12 +14,14 @@
         }
     },
     "files": [
-        "dist"
+        "dist",
+        "README.md"
     ],
     "scripts": {
         "build": "tsc",
         "dev": "tsc --watch",
-        "clean": "rm -rf dist"
+        "clean": "rm -rf dist",
+        "prepublishOnly": "npm run clean && npm run build"
     },
     "keywords": [
         "error",
@@ -28,18 +31,21 @@
         "error-reporting",
         "user-actions",
         "react",
-        "typescript"
+        "typescript",
+        "error-tracking",
+        "session-replay"
     ],
-    "author": "",
+    "author": "devanshnigam",
     "license": "MIT",
     "devDependencies": {
         "typescript": "^5.3.0"
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/yourusername/error-replay"
+        "url": "git+https://github.com/NigamDevansh/replayMyError.git"
     },
     "bugs": {
-        "url": "https://github.com/yourusername/error-replay/issues"
-    }
+        "url": "https://github.com/NigamDevansh/replayMyError/issues"
+    },
+    "homepage": "https://github.com/NigamDevansh/replayMyError#readme"
 }

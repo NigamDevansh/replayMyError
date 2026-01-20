@@ -1,5 +1,9 @@
 # Error Replay
 
+[![npm version](https://img.shields.io/npm/v/error-replay.svg)](https://www.npmjs.com/package/error-replay)
+[![npm downloads](https://img.shields.io/npm/dm/error-replay.svg)](https://www.npmjs.com/package/error-replay)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 A lightweight JavaScript/TypeScript package that records user actions and generates detailed error reports for debugging.
 
 ## Features
