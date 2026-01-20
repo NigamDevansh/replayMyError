@@ -1,36 +1,74 @@
-# 🎬 Error Replay
+# Error Replay
 
-> A lightweight JavaScript/TypeScript package that records user actions in a circular buffer and generates detailed error reports for debugging.
+A lightweight JavaScript/TypeScript package that records user actions and generates detailed error reports for debugging.
 
----
+## Features
 
-## 🚧 Work in Progress
+- Records clicks, inputs, navigation, network requests, and console errors
+- Captures React component names for precise debugging
+- Auto-sanitizes sensitive data (passwords, credit cards, SSNs)
+- Configurable circular buffer with granular tracking options
+- Works with all HTTP libraries (axios, fetch, GraphQL clients)
 
-Hey there! 👋
+## Installation
 
-This project is **actively being developed**. I'm building something exciting here — a tool that helps developers understand exactly what users did before an error occurred.
+```bash
+npm install error-replay
+```
 
-### What's Coming
+## Quick Start
 
-- Click & input tracking
-- Navigation monitoring
-- Network request logging  
-- React component detection
-- Privacy-first sanitization
-- Structured JSON error reports
+```typescript
+import ErrorReplay from 'error-replay';
 
-Stay tuned for updates! Once the core features are stable and ready for use, I'll publish full documentation and usage examples here.
+const replay = new ErrorReplay({
+    maxActions: 50,
+    onError: (report) => {
+        // Send report to your error tracking service
+        console.log(report);
+    }
+});
 
----
+replay.start();
+```
 
-### 🌟 Interested?
+## Configuration
 
-Feel free to ⭐ star this repo to follow along with the progress!
+```typescript
+const replay = new ErrorReplay({
+    maxActions: 50,                    // Buffer size
+    captureComponents: true,           // React component detection
+    trackClicks: true,                 // Click tracking
+    trackInputs: true,                 // Input tracking (or use object for granular control)
+    trackNavigation: true,             // Route changes
+    trackNetwork: true,                // API calls
+    trackConsole: true,                // Console errors/warnings
+    sanitize: ['.private', 'secret'],  // Additional fields to sanitize
+    onError: (report) => {},           // Error callback
+});
+```
 
-Thank you for stopping by 🙂
+### Granular Input Tracking
 
----
+```typescript
+trackInputs: {
+    text: true,      // Text inputs and textareas
+    checkbox: true,  // Checkboxes and radio buttons
+    select: true     // Select dropdowns
+}
+```
 
-## 📄 License
+## Manual Capture
+
+```typescript
+try {
+    riskyOperation();
+} catch (error) {
+    const report = replay.capture(error);
+    sendToServer(report);
+}
+```
+
+## License
 
 MIT
