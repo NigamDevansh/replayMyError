@@ -1,6 +1,6 @@
 {
     "name": "error-replay",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "Lightweight error replay package that records user actions and generates detailed error reports",
     "main": "dist/index.js",
     "module": "dist/index.js",
