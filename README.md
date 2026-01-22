@@ -14,6 +14,10 @@ A lightweight JavaScript/TypeScript package that records user actions and genera
 - Configurable circular buffer with granular tracking options
 - Works with all HTTP libraries (axios, fetch, GraphQL clients)
 
+## In Progress
+
+- **Webhook Integration** - Direct error report delivery to your backend endpoints (jira, slack, discord, etc.)
+
 ## Installation
 
 ```bash
