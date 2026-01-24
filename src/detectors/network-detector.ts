@@ -5,6 +5,7 @@
  */
 
 import { NetworkAction, DetectorCleanup } from '../types';
+import { getActionMetadata } from '../utils/action-metadata';
 
 export interface NetworkDetectorOptions {
     onAction: (action: NetworkAction) => void;
@@ -36,8 +37,7 @@ export function createNetworkDetector(options: NetworkDetectorOptions): Detector
                 method: method.toUpperCase(),
                 status: response.status,
                 duration: Date.now() - startTime,
-                timestamp: Date.now(),
-                page: window.location.pathname
+                ...getActionMetadata()
             };
 
             onAction(action);
@@ -49,8 +49,7 @@ export function createNetworkDetector(options: NetworkDetectorOptions): Detector
                 method: method.toUpperCase(),
                 error: error instanceof Error ? error.message : 'Unknown error',
                 duration: Date.now() - startTime,
-                timestamp: Date.now(),
-                page: window.location.pathname
+                ...getActionMetadata()
             };
 
             onAction(action);
@@ -86,8 +85,7 @@ export function createNetworkDetector(options: NetworkDetectorOptions): Detector
                 method: data.method,
                 status: this.status,
                 duration: Date.now() - data.startTime,
-                timestamp: Date.now(),
-                page: window.location.pathname
+                ...getActionMetadata()
             };
 
             onAction(action);
@@ -103,8 +101,7 @@ export function createNetworkDetector(options: NetworkDetectorOptions): Detector
                 method: data.method,
                 error: 'Network error',
                 duration: Date.now() - data.startTime,
-                timestamp: Date.now(),
-                page: window.location.pathname
+                ...getActionMetadata()
             };
 
             onAction(action);

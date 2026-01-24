@@ -6,6 +6,8 @@
 
 import { ClickAction, DetectorCleanup } from '../types';
 import { getElementIdentifier } from '../utils/element-identifier';
+import { getActionMetadata } from '../utils/action-metadata';
+import { addCapturedListeners } from '../utils/event-helpers';
 
 export interface ClickDetectorOptions {
     captureComponents: boolean;
@@ -44,20 +46,12 @@ export function createClickDetector(options: ClickDetectorOptions): DetectorClea
             componentPath: elementInfo.componentPath,
             text: elementInfo.text,
             position: { x, y },
-            timestamp: Date.now(),
-            page: window.location.pathname
+            ...getActionMetadata()
         };
 
         onAction(action);
     };
 
-    // Add event listeners
-    document.addEventListener('click', handleClick, { capture: true, passive: true });
-    document.addEventListener('touchstart', handleClick, { capture: true, passive: true });
-
-    // Return cleanup function
-    return () => {
-        document.removeEventListener('click', handleClick, { capture: true } as EventListenerOptions);
-        document.removeEventListener('touchstart', handleClick, { capture: true } as EventListenerOptions);
-    };
+    // Add event listeners with cleanup
+    return addCapturedListeners(document, ['click', 'touchstart'], handleClick as EventListener);
 }

@@ -6,6 +6,8 @@
 
 import { InputAction, DetectorCleanup } from '../types';
 import { getElementIdentifier } from '../utils/element-identifier';
+import { getActionMetadata } from '../utils/action-metadata';
+import { addCapturedListener } from '../utils/event-helpers';
 
 export interface SelectDetectorOptions {
     captureComponents: boolean;
@@ -41,17 +43,12 @@ export function createSelectDetector(options: SelectDetectorOptions): DetectorCl
             valueLength: selectedText.length,
             wasCleared: false,
             isSanitized: false,
-            timestamp: Date.now(),
-            page: window.location.pathname
+            ...getActionMetadata()
         };
 
         onAction(action);
     };
 
     // Only listen to change events for selects
-    document.addEventListener('change', handleChange, { capture: true, passive: true });
-
-    return () => {
-        document.removeEventListener('change', handleChange, { capture: true } as EventListenerOptions);
-    };
+    return addCapturedListener(document, 'change', handleChange);
 }

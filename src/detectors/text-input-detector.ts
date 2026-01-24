@@ -8,6 +8,8 @@
 import { InputAction, DetectorCleanup } from '../types';
 import { getElementIdentifier } from '../utils/element-identifier';
 import { getSafeInputValue } from '../utils/sanitizer';
+import { getActionMetadata } from '../utils/action-metadata';
+import { addCapturedListener } from '../utils/event-helpers';
 
 export interface TextInputDetectorOptions {
     captureComponents: boolean;
@@ -60,8 +62,7 @@ export function createTextInputDetector(options: TextInputDetectorOptions): Dete
             valueLength: target.value.length,
             wasCleared,
             isSanitized,
-            timestamp: Date.now(),
-            page: window.location.pathname
+            ...getActionMetadata()
         };
 
         onAction(action);
@@ -71,11 +72,11 @@ export function createTextInputDetector(options: TextInputDetectorOptions): Dete
     const handleBlurEvent = (event: Event) => handleEvent(event, 'blur');
 
     // Add event listeners - only blur and change for complete value capture
-    document.addEventListener('change', handleChangeEvent, { capture: true, passive: true });
-    document.addEventListener('blur', handleBlurEvent, { capture: true, passive: true });
+    const cleanupChange = addCapturedListener(document, 'change', handleChangeEvent);
+    const cleanupBlur = addCapturedListener(document, 'blur', handleBlurEvent);
 
     return () => {
-        document.removeEventListener('change', handleChangeEvent, { capture: true } as EventListenerOptions);
-        document.removeEventListener('blur', handleBlurEvent, { capture: true } as EventListenerOptions);
+        cleanupChange();
+        cleanupBlur();
     };
 }

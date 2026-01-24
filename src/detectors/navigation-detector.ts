@@ -5,6 +5,7 @@
  */
 
 import { NavigationAction, DetectorCleanup } from '../types';
+import { getActionMetadata } from '../utils/action-metadata';
 
 export interface NavigationDetectorOptions {
     onAction: (action: NavigationAction) => void;
@@ -25,8 +26,8 @@ export function createNavigationDetector(options: NavigationDetectorOptions): De
             type: 'navigation',
             from,
             to,
-            timestamp: Date.now(),
-            page: to
+            ...getActionMetadata(),
+            page: to  // Override page with 'to' for navigation
         };
 
         onAction(action);

@@ -5,6 +5,7 @@
  */
 
 import { ConsoleAction, DetectorCleanup } from '../types';
+import { getActionMetadata } from '../utils/action-metadata';
 
 export interface ConsoleDetectorOptions {
     onAction: (action: ConsoleAction) => void;
@@ -45,8 +46,7 @@ export function createConsoleDetector(options: ConsoleDetectorOptions): Detector
                 if (arg instanceof Error) return arg.message;
                 return typeof arg;
             }),
-            timestamp: Date.now(),
-            page: window.location.pathname
+            ...getActionMetadata()
         };
 
         onAction(action);

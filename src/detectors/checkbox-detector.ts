@@ -6,6 +6,8 @@
 
 import { InputAction, DetectorCleanup } from '../types';
 import { getElementIdentifier } from '../utils/element-identifier';
+import { getActionMetadata } from '../utils/action-metadata';
+import { addCapturedListener } from '../utils/event-helpers';
 
 export interface CheckboxDetectorOptions {
     captureComponents: boolean;
@@ -42,17 +44,12 @@ export function createCheckboxDetector(options: CheckboxDetectorOptions): Detect
             valueLength: 1,
             wasCleared: false,
             isSanitized: false,
-            timestamp: Date.now(),
-            page: window.location.pathname
+            ...getActionMetadata()
         };
 
         onAction(action);
     };
 
     // Only listen to change events for checkboxes/radios
-    document.addEventListener('change', handleChange, { capture: true, passive: true });
-
-    return () => {
-        document.removeEventListener('change', handleChange, { capture: true } as EventListenerOptions);
-    };
+    return addCapturedListener(document, 'change', handleChange);
 }
