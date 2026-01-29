@@ -6,6 +6,7 @@
 
 import { NavigationAction, DetectorCleanup } from '../types';
 import { getActionMetadata } from '../utils/action-metadata';
+import { getPathWithQuery, getCurrentPath, getCurrentPathWithHash } from '../utils/url-helpers';
 
 export interface NavigationDetectorOptions {
     onAction: (action: NavigationAction) => void;
@@ -17,7 +18,7 @@ export interface NavigationDetectorOptions {
 export function createNavigationDetector(options: NavigationDetectorOptions): DetectorCleanup {
     const { onAction } = options;
 
-    let currentPath = window.location.pathname + window.location.search;
+    let currentPath = getCurrentPath();
 
     const recordNavigation = (from: string, to: string) => {
         if (from === to) return; // Skip if same path
@@ -39,9 +40,7 @@ export function createNavigationDetector(options: NavigationDetectorOptions): De
     history.pushState = function (state, title, url) {
         const result = originalPushState(state, title, url);
         if (url) {
-            const newPath = new URL(url.toString(), window.location.origin).pathname +
-                new URL(url.toString(), window.location.origin).search;
-            recordNavigation(currentPath, newPath);
+            recordNavigation(currentPath, getPathWithQuery(url));
         }
         return result;
     };
@@ -51,24 +50,20 @@ export function createNavigationDetector(options: NavigationDetectorOptions): De
     history.replaceState = function (state, title, url) {
         const result = originalReplaceState(state, title, url);
         if (url) {
-            const newPath = new URL(url.toString(), window.location.origin).pathname +
-                new URL(url.toString(), window.location.origin).search;
-            recordNavigation(currentPath, newPath);
+            recordNavigation(currentPath, getPathWithQuery(url));
         }
         return result;
     };
 
     // Listen for popstate (back/forward button)
     const handlePopState = () => {
-        const newPath = window.location.pathname + window.location.search;
-        recordNavigation(currentPath, newPath);
+        recordNavigation(currentPath, getCurrentPath());
     };
     window.addEventListener('popstate', handlePopState);
 
     // Listen for hashchange
     const handleHashChange = () => {
-        const newPath = window.location.pathname + window.location.search + window.location.hash;
-        recordNavigation(currentPath, newPath);
+        recordNavigation(currentPath, getCurrentPathWithHash());
     };
     window.addEventListener('hashchange', handleHashChange);
 
