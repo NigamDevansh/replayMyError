@@ -5,11 +5,11 @@
  * and privacy-aware sanitization.
  */
 
-import { InputAction, DetectorCleanup } from '../types';
-import { getElementIdentifier } from '../utils/element-identifier';
-import { getSafeInputValue } from '../utils/sanitizer';
-import { getActionMetadata } from '../utils/action-metadata';
-import { addCapturedListener } from '../utils/event-helpers';
+import { InputAction, DetectorCleanup } from '../../types';
+import { getElementIdentifier } from '../../dom/element-identifier';
+import { getSafeInputValue } from '../../utils/sanitizer';
+import { getActionMetadata } from '../../utils/action-metadata';
+import { addCapturedListener } from '../../utils/event-helpers';
 
 export interface TextInputDetectorOptions {
     captureComponents: boolean;

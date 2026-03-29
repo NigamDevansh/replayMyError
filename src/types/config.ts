@@ -1,64 +1,10 @@
 /**
- * Error Replay - Type Definitions
+ * Configuration Type Definitions
+ * 
+ * Interfaces for ErrorReplay configuration options.
  */
 
-// ============================================
-// Action Types
-// ============================================
-
-export interface BaseAction {
-    type: string;
-    timestamp: number;
-    page: string;
-}
-
-export interface ClickAction extends BaseAction {
-    type: 'click';
-    element: string;
-    component?: string;
-    componentPath?: string;
-    text?: string;
-    position: { x: number; y: number };
-}
-
-export interface InputAction extends BaseAction {
-    type: 'input';
-    element: string;
-    component?: string;
-    inputType: 'change' | 'blur';
-    value: string;
-    valueLength: number;
-    wasCleared: boolean;
-    isSanitized: boolean;
-}
-
-export interface NavigationAction extends BaseAction {
-    type: 'navigation';
-    from: string;
-    to: string;
-}
-
-export interface NetworkAction extends BaseAction {
-    type: 'network';
-    url: string;
-    method: string;
-    status?: number;
-    duration?: number;
-    error?: string;
-}
-
-export interface ConsoleAction extends BaseAction {
-    type: 'console';
-    level: 'error' | 'warn';
-    message: string;
-    args?: string[];
-}
-
-export type UserAction = ClickAction | InputAction | NavigationAction | NetworkAction | ConsoleAction;
-
-// ============================================
-// Configuration
-// ============================================
+import type { ErrorReport } from './report';
 
 /**
  * Configuration for which input types to track.
@@ -171,48 +117,4 @@ export interface ErrorReplayConfig {
         sessionId?: string;
         [key: string]: unknown;
     };
-}
-
-// ============================================
-// Error Report
-// ============================================
-
-export interface ErrorInfo {
-    message: string;
-    type: string;
-    stack?: string;
-    componentStack?: string;
-}
-
-export interface ContextInfo {
-    url: string;
-    userAgent: string;
-    viewport: { width: number; height: number };
-    platform: string;
-    timestamp: string;
-}
-
-export type ActionWithRelativeTime = UserAction & {
-    relativeTime: string;
-};
-
-export interface ErrorReport {
-    reportId: string;
-    timestamp: string;
-    error: ErrorInfo;
-    context: ContextInfo;
-    user?: {
-        id?: string;
-        sessionId?: string;
-        [key: string]: unknown;
-    };
-    actions: ActionWithRelativeTime[];
-}
-
-// ============================================
-// Internal Types
-// ============================================
-
-export interface DetectorCleanup {
-    (): void;
 }

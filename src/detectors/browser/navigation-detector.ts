@@ -4,9 +4,9 @@
  * Tracks page navigation including SPA route changes.
  */
 
-import { NavigationAction, DetectorCleanup } from '../types';
-import { getActionMetadata } from '../utils/action-metadata';
-import { getPathWithQuery, getCurrentPath, getCurrentPathWithHash } from '../utils/url-helpers';
+import { NavigationAction, DetectorCleanup } from '../../types';
+import { getActionMetadata } from '../../utils/action-metadata';
+import { getPathWithQuery, getCurrentPath, getCurrentPathWithHash } from '../../utils/url-helpers';
 
 export interface NavigationDetectorOptions {
     onAction: (action: NavigationAction) => void;

@@ -1,10 +1,18 @@
 /**
- * Element Identifier Utility
+ * Element Identifier
  * 
- * Generates meaningful identifiers for DOM elements using a priority-based approach.
+ * Generates meaningful identifiers for DOM elements using a priority-based approach:
+ *   1. ID attribute
+ *   2. data-testid / data-component / data-test / data-cy
+ *   3. Text content (buttons, links, labels)
+ *   4. aria-label
+ *   5. name attribute
+ *   6. Class names
+ *   7. CSS selector path (last resort)
  */
 
 import { getReactComponentInfo } from './react-detector';
+import { getCSSPath } from './css-path';
 
 export interface ElementInfo {
     identifier: string;
@@ -48,7 +56,6 @@ export function getElementIdentifier(element: Element, captureComponents: boolea
             result.identifier = `${tagName}[data-component="${htmlElement.dataset.component}"]`;
             return result;
         }
-        // Check for common test attribute variations
         if (htmlElement.dataset.test) {
             result.identifier = `${tagName}[data-test="${htmlElement.dataset.test}"]`;
             return result;
@@ -102,41 +109,6 @@ export function getElementIdentifier(element: Element, captureComponents: boolea
     // Priority 7: CSS selector path (last resort)
     result.identifier = getCSSPath(element);
     return result;
-}
-
-/**
- * Generate a CSS selector path for an element
- */
-function getCSSPath(element: Element): string {
-    const path: string[] = [];
-    let current: Element | null = element;
-
-    while (current && current !== document.body && path.length < 5) {
-        let selector = current.tagName.toLowerCase();
-
-        if (current.id) {
-            selector = `#${current.id}`;
-            path.unshift(selector);
-            break; // ID is unique, no need to go further
-        }
-
-        // Add nth-child if there are siblings with same tag
-        const parent = current.parentElement;
-        if (parent) {
-            const siblings = Array.from(parent.children).filter(
-                child => child.tagName === current!.tagName
-            );
-            if (siblings.length > 1) {
-                const index = siblings.indexOf(current) + 1;
-                selector += `:nth-child(${index})`;
-            }
-        }
-
-        path.unshift(selector);
-        current = current.parentElement;
-    }
-
-    return path.join(' > ');
 }
 
 /**

@@ -7,7 +7,7 @@
  * - Select dropdowns
  */
 
-import { InputAction, DetectorCleanup, TrackInputsConfig } from '../types';
+import { InputAction, DetectorCleanup, TrackInputsConfig } from '../../types';
 import { createTextInputDetector } from './text-input-detector';
 import { createCheckboxDetector } from './checkbox-detector';
 import { createSelectDetector } from './select-detector';
@@ -35,7 +35,6 @@ export function createInputDetector(options: InputDetectorOptions): DetectorClea
 
     const cleanupFns: DetectorCleanup[] = [];
 
-    // Initialize detectors based on config
     if (track.text) {
         cleanupFns.push(createTextInputDetector({
             captureComponents,

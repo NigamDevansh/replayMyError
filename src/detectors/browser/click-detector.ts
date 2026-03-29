@@ -4,10 +4,10 @@
  * Tracks all click and touch events on the document.
  */
 
-import { ClickAction, DetectorCleanup } from '../types';
-import { getElementIdentifier } from '../utils/element-identifier';
-import { getActionMetadata } from '../utils/action-metadata';
-import { addCapturedListeners } from '../utils/event-helpers';
+import { ClickAction, DetectorCleanup } from '../../types';
+import { getElementIdentifier } from '../../dom/element-identifier';
+import { getActionMetadata } from '../../utils/action-metadata';
+import { addCapturedListeners } from '../../utils/event-helpers';
 
 export interface ClickDetectorOptions {
     captureComponents: boolean;

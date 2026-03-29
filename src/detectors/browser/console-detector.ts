@@ -1,11 +1,11 @@
 /**
- * Console Detector
+ * Console Detector (Browser)
  * 
- * Captures console.error and console.warn calls.
+ * Captures console.error and console.warn calls in browser environments.
  */
 
-import { ConsoleAction, DetectorCleanup } from '../types';
-import { getActionMetadata } from '../utils/action-metadata';
+import { ConsoleAction, DetectorCleanup } from '../../types';
+import { getActionMetadata } from '../../utils/action-metadata';
 
 export interface ConsoleDetectorOptions {
     onAction: (action: ConsoleAction) => void;

@@ -4,10 +4,10 @@
  * Tracks checkbox and radio button state changes.
  */
 
-import { InputAction, DetectorCleanup } from '../types';
-import { getElementIdentifier } from '../utils/element-identifier';
-import { getActionMetadata } from '../utils/action-metadata';
-import { addCapturedListener } from '../utils/event-helpers';
+import { InputAction, DetectorCleanup } from '../../types';
+import { getElementIdentifier } from '../../dom/element-identifier';
+import { getActionMetadata } from '../../utils/action-metadata';
+import { addCapturedListener } from '../../utils/event-helpers';
 
 export interface CheckboxDetectorOptions {
     captureComponents: boolean;

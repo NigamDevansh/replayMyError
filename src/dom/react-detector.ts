@@ -2,6 +2,7 @@
  * React Component Detector
  * 
  * Detects React component names from DOM elements by inspecting React fiber nodes.
+ * Supports React 16+ (class components, function components, forwardRef, memo).
  */
 
 export interface ReactComponentInfo {
@@ -10,7 +11,8 @@ export interface ReactComponentInfo {
 }
 
 /**
- * Get React component information for a DOM element
+ * Get React component information for a DOM element.
+ * Returns the nearest component name and the component tree path.
  */
 export function getReactComponentInfo(element: Element): ReactComponentInfo | null {
     try {
@@ -53,11 +55,10 @@ export function getReactComponentInfo(element: Element): ReactComponentInfo | nu
 }
 
 /**
- * Find the React fiber node attached to a DOM element
+ * Find the React fiber node attached to a DOM element.
+ * React 17+ uses `__reactFiber$`, React 16 uses `__reactInternalInstance$`.
  */
 function getReactFiber(element: Element): any {
-    // React 17+ uses __reactFiber$
-    // React 16 uses __reactInternalInstance$
     const keys = Object.keys(element);
 
     const fiberKey = keys.find(key =>
@@ -73,17 +74,16 @@ function getReactFiber(element: Element): any {
 }
 
 /**
- * Get the component name from a fiber node
+ * Get the component name from a fiber node.
+ * Handles function components, class components, forwardRef, and memo.
  */
 function getFiberComponentName(fiber: any): string | null {
     if (!fiber) return null;
 
-    // Function components and class components
     if (fiber.type) {
         // Function component or class component
         if (typeof fiber.type === 'function') {
             const name = fiber.type.displayName || fiber.type.name;
-            // Filter out React internal components
             if (name && !isReactInternalComponent(name)) {
                 return name;
             }
@@ -114,6 +114,7 @@ function getFiberComponentName(fiber: any): string | null {
 
 /**
  * Check if a component name is a React internal component
+ * (Fragment, StrictMode, Suspense, etc.)
  */
 function isReactInternalComponent(name: string): boolean {
     const internalNames = [
@@ -132,16 +133,14 @@ function isReactInternalComponent(name: string): boolean {
 }
 
 /**
- * Check if React is present on the page
+ * Check if React is present on the page.
  */
 export function isReactPresent(): boolean {
     try {
-        // Check for React DevTools hook
         if ((window as any).__REACT_DEVTOOLS_GLOBAL_HOOK__) {
             return true;
         }
 
-        // Check for any element with React fiber
         const testElement = document.body.firstElementChild;
         if (testElement) {
             const keys = Object.keys(testElement);

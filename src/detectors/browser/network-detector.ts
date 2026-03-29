@@ -4,8 +4,8 @@
  * Intercepts fetch and XMLHttpRequest to track API calls.
  */
 
-import { NetworkAction, DetectorCleanup } from '../types';
-import { getActionMetadata } from '../utils/action-metadata';
+import { NetworkAction, DetectorCleanup } from '../../types';
+import { getActionMetadata } from '../../utils/action-metadata';
 
 export interface NetworkDetectorOptions {
     onAction: (action: NetworkAction) => void;
@@ -125,7 +125,6 @@ function sanitizeUrl(url: string): string {
     try {
         const parsed = new URL(url, window.location.origin);
 
-        // List of sensitive parameter names to remove
         const sensitiveParams = [
             'token', 'api_key', 'apikey', 'key', 'secret',
             'password', 'passwd', 'auth', 'authorization',
@@ -138,7 +137,6 @@ function sanitizeUrl(url: string): string {
             }
         }
 
-        // Return path + sanitized query string
         return parsed.pathname + parsed.search;
     } catch {
         return url;

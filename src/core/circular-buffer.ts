@@ -1,11 +1,12 @@
-import { UserAction } from './types';
-
 /**
  * Circular Buffer - Fixed-size buffer that overwrites oldest entries
  * 
  * Memory efficient storage for user actions. When the buffer is full,
  * new actions overwrite the oldest ones automatically.
  */
+
+import { UserAction } from '../types';
+
 export class CircularBuffer<T = UserAction> {
     private buffer: (T | undefined)[];
     private head: number = 0;
