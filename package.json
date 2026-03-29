@@ -1,6 +1,6 @@
 {
     "name": "error-replay",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "description": "Lightweight error replay package that records user actions and generates detailed error reports",
     "type": "module",
     "main": "./dist/index.cjs",
