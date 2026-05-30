@@ -1,7 +1,7 @@
 import { defineConfig } from 'tsup';
 
 export default defineConfig({
-    entry: ['src/index.ts'],
+    entry: ['src/index.ts', 'src/config.ts'],
     format: ['cjs', 'esm'],
     dts: true,
     splitting: false,
@@ -9,4 +9,5 @@ export default defineConfig({
     clean: true,
     target: 'es2020',
     outDir: 'dist',
+    external: ['@slack/web-api'],
 });

@@ -1,6 +1,6 @@
 {
     "name": "error-replay",
-    "version": "1.2.1",
+    "version": "2.0.0",
     "description": "Lightweight error replay package that records user actions and generates detailed error reports",
     "type": "module",
     "main": "./dist/index.cjs",
@@ -12,6 +12,20 @@
             "import": "./dist/index.js",
             "require": "./dist/index.cjs",
             "default": "./dist/index.js"
+        },
+        "./config": {
+            "types": "./dist/config.d.ts",
+            "import": "./dist/config.js",
+            "require": "./dist/config.cjs",
+            "default": "./dist/config.js"
+        }
+    },
+    "peerDependencies": {
+        "@slack/web-api": "^7.0.0"
+    },
+    "peerDependenciesMeta": {
+        "@slack/web-api": {
+            "optional": true
         }
     },
     "files": [
@@ -45,6 +59,7 @@
     "author": "devanshnigam",
     "license": "MIT",
     "devDependencies": {
+        "@slack/web-api": "^7.16.0",
         "@types/node": "^25.5.0",
         "tsup": "^8.5.1",
         "typescript": "^5.3.0"

@@ -14,6 +14,7 @@ import { isBrowser } from './utils/env';
 import {
     UserAction,
     ErrorReplayConfig,
+    UserConfig,
     ErrorReport,
     DetectorCleanup
 } from './types';
@@ -21,6 +22,7 @@ import { DEFAULT_CONFIG, ResolvedConfig } from './core/config';
 import { extractErrorInfo, getContext, buildActionsWithRelativeTime, generateReportId } from './core/report-builder';
 import { startBrowserDetectors, installBrowserErrorHandlers, removeBrowserErrorHandlers, BrowserErrorHandlers } from './core/browser-handlers';
 import { startServerDetectors, installServerErrorHandlers, removeServerErrorHandlers, ServerErrorHandlers } from './core/server-handlers';
+import { SlackIntegration } from './integrations/slack';
 
 export class ErrorReplay {
     private buffer: CircularBuffer<UserAction>;
@@ -29,10 +31,38 @@ export class ErrorReplay {
     private isRunning: boolean = false;
     private browserErrorHandlers: BrowserErrorHandlers | null = null;
     private serverErrorHandlers: ServerErrorHandlers | null = null;
+    private slackIntegration: SlackIntegration | null = null;
 
-    constructor(config: ErrorReplayConfig = {}) {
-        this.config = { ...DEFAULT_CONFIG, ...config };
+    constructor(config: ErrorReplayConfig) {
+        if (!config || !config.user || !config.user.id) {
+            throw new Error('[ErrorReplay] config.user.id is required.');
+        }
+
+        // Validate groupByField dotted path
+        if (config.slack?.groupByField) {
+            const field = config.slack.groupByField;
+            if (field.startsWith('metadata.')) {
+                const metaKey = field.slice('metadata.'.length);
+                if (!config.user.metadata || !(metaKey in config.user.metadata)) {
+                    console.warn(
+                        `[ErrorReplay] slack.groupByField "${field}" — key "${metaKey}" ` +
+                        `not found in user.metadata. Falling back to "id".`
+                    );
+                }
+            } else if (!(field in config.user)) {
+                console.warn(
+                    `[ErrorReplay] slack.groupByField "${field}" not found in user config. ` +
+                    `Available: id, name, email, sessionId, metadata.<key>. Falling back to "id".`
+                );
+            }
+        }
+
+        this.config = { ...DEFAULT_CONFIG, ...config } as ResolvedConfig;
         this.buffer = new CircularBuffer<UserAction>(this.config.maxActions);
+
+        if (config.slack?.token && config.slack?.enabled !== false) {
+            this.slackIntegration = new SlackIntegration(config.slack);
+        }
     }
 
     /**
@@ -59,6 +89,11 @@ export class ErrorReplay {
             const report = this.capture(error);
             if (this.config.onError) {
                 this.config.onError(report);
+            }
+            if (this.slackIntegration) {
+                this.slackIntegration.sendReport(report).catch(err => {
+                    console.error('[ErrorReplay] Failed to send to Slack:', err);
+                });
             }
             this.buffer.clear();
         };
@@ -101,19 +136,36 @@ export class ErrorReplay {
      * Works in both browser and server environments.
      */
     capture(error: Error | unknown): ErrorReport {
-        const report: ErrorReport = {
+        return {
             reportId: generateReportId(),
             timestamp: new Date().toISOString(),
             error: extractErrorInfo(error),
             context: getContext(),
+            user: this.config.user,
             actions: buildActionsWithRelativeTime(this.buffer.getAll())
         };
+    }
 
-        if (this.config.user) {
-            report.user = this.config.user;
+    /**
+     * Update the user identity dynamically (e.g. after login or API fetch).
+     */
+    setUser(user: UserConfig): void {
+        if (!user || !user.id) {
+            throw new Error('[ErrorReplay] user.id is required.');
         }
+        this.config.user = user;
+    }
 
-        return report;
+    /**
+     * Manually send a report to Slack.
+     * Resolves when Slack delivery is confirmed.
+     */
+    async sendToSlack(report: ErrorReport): Promise<void> {
+        if (!this.slackIntegration) {
+            console.warn('[ErrorReplay] Slack is not configured.');
+            return;
+        }
+        await this.slackIntegration.sendReport(report);
     }
 
     /** Get all recorded actions */
@@ -150,6 +202,8 @@ export class ErrorReplay {
 export * from './types';
 export { CircularBuffer } from './core/circular-buffer';
 export { isBrowser } from './utils/env';
+export { SlackIntegration } from './integrations/slack';
+export { defineConfig } from './types/config';
 
 export default ErrorReplay;
 

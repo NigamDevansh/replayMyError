@@ -111,10 +111,59 @@ export interface ErrorReplayConfig {
     /** Enable console tracking (default: true) */
     trackConsole?: boolean;
 
-    /** Custom user data to include in reports */
-    user?: {
-        id?: string;
-        sessionId?: string;
-        [key: string]: unknown;
-    };
+    /** Custom user data to include in reports. REQUIRED. */
+    user: UserConfig;
+
+    /** Slack integration options (optional, server-side only) */
+    slack?: SlackConfig;
+}
+
+export interface UserConfig {
+    /** Unique user identifier. REQUIRED — default Slack thread grouping key. */
+    id: string;
+    /** Display name */
+    name?: string;
+    /** Email address */
+    email?: string;
+    /** Session identifier */
+    sessionId?: string;
+    /** Arbitrary additional metadata — use 'metadata.<key>' in groupByField */
+    metadata?: Record<string, unknown>;
+}
+
+export interface SlackConfig {
+    /** Slack Bot Token (xoxb-...). Read from process.env in your config file. */
+    token: string;
+
+    /**
+     * Channel(s) to post reports to.
+     * Accepts channel IDs (C0123456789) or channel names (#error-replay).
+     * Names are auto-resolved to IDs on first use via conversations.list.
+     * @default ['#error-replay']
+     */
+    channels?: string[];
+
+    /**
+     * Field from user object to group Slack threads by.
+     * 
+     * Supports top-level fields and metadata sub-fields:
+     * - Top-level: 'id', 'name', 'email', 'sessionId'
+     * - Metadata: 'metadata.team', 'metadata.region', etc.
+     * 
+     * Reports with the same value are posted as thread replies under one parent.
+     * Falls back to 'id' if the specified field is not found.
+     * @default 'id'
+     */
+    groupByField?: string;
+
+    /**
+     * Toggle Slack on/off without removing config.
+     * @default true
+     */
+    enabled?: boolean;
+}
+
+/** Helper to provide type autocomplete when defining ErrorReplay configuration */
+export function defineConfig(config: ErrorReplayConfig): ErrorReplayConfig {
+    return config;
 }

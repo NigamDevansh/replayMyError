@@ -5,6 +5,7 @@
  */
 
 import { UserAction } from './actions';
+import type { UserConfig } from './config';
 
 export interface ErrorInfo {
     message: string;
@@ -30,10 +31,6 @@ export interface ErrorReport {
     timestamp: string;
     error: ErrorInfo;
     context: ContextInfo;
-    user?: {
-        id?: string;
-        sessionId?: string;
-        [key: string]: unknown;
-    };
+    user: UserConfig;
     actions: ActionWithRelativeTime[];
 }
